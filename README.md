@@ -28,6 +28,43 @@ This project is a mini programming language interpreter implemented in Python. I
 
 - Print statements: `print(x)`  
 
-- Parentheses: `( ... )`  
+- Parentheses: `( ... )`
+
+---
+
+## How It Works
+
+1. The **lexer** converts input text into tokens  
+2. The **parser** generates an AST from tokens  
+3. The **interpreter** evaluates the AST and produces output  
+
+---
+
+## How to Run
+
+Run the following command:
+python main.py
+Then enter your code in the terminal.
+
+---
+
+## Concepts Covered
+
+- Lexical analysis  
+- Parsing and grammar rules  
+- Abstract Syntax Trees (AST)  
+- Recursion  
+- Expression evaluation  
+- Error handling  
+
+---
+
+## Future Improvements
+
+- Add `if` statements  
+- Add loops (`while`)  
+- Add function support  
+- Add string support  
+- Improve error handling  
 
 ---
