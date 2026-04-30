@@ -1,0 +1,23 @@
+program         : statement_list
+
+statement_list  : statement statement_list
+                | statement
+
+statement       : assignment
+                | print_statement
+                | comparison
+
+assignment      : IDENTIFIER ASSIGN comparison
+
+print_statement : PRINT LPAREN comparison RPAREN
+
+comparison      : expr ((LESS | GREATER) expr)?
+
+expr            : term ((PLUS | MINUS) term)*
+
+term            : factor ((MULTIPLY | DIVIDE) factor)*
+
+factor          : (PLUS | MINUS) factor
+                | NUMBER
+                | IDENTIFIER
+                | LPAREN comparison RPAREN
