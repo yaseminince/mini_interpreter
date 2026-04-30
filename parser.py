@@ -18,7 +18,11 @@ class Parser:
 # expect : ensures the current token matches the expected type if not raises an error
     def expect(self,token_type): 
         if self.current_token.type !=token_type:
-            raise ParserError(f"Expected {token_type}", self.current_token)
+            raise ParserError(
+                f"Expected {token_type}",
+                self.current_token.line,
+                self.current_token.column
+)
         self.advance()
 
 # factor : smallest unit
@@ -46,7 +50,11 @@ class Parser:
             node = self.comparison() # parse inside expression
             self.expect(TokenType.RPAREN) # to expect closing parantheses )
             return node 
-        raise ParserError("Unexpected token in factor", token)
+        raise ParserError(
+            "Unexpected token in factor",
+            token.line,
+            token.column
+)
 
 # term : handles * and /
     def term(self):
@@ -80,7 +88,11 @@ class Parser:
     def assignment(self):
         token=self.current_token
         if token.type != TokenType.IDENTIFIER:
-            raise ParserError("Expected variable name", token)
+            raise ParserError(
+                "Expected variable name",
+                token.line,
+                token.column
+)
         var_name=token.value
         self.advance()
         # expecting "="
