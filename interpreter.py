@@ -2,15 +2,7 @@ from Lexer import Lexer
 from parser import Parser
 from TokenType import TokenType
 from ast_nodes import Number, Variable, BinaryOp, UnaryOp, Assign, Print, Compound
-
-
-# for errors that happen while the program is running
-class InterpreterRuntimeError(Exception):
-    def __init__(self, message):
-        self.message = message
-
-    def __str__(self):
-        return f"Runtime Error: {self.message}"
+from error import InterpreterRuntimeError
 
 
 # evaluates the AST and produces a result
