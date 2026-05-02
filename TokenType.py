@@ -2,6 +2,7 @@ class TokenType:
 
     NUMBER = "NUMBER" # numeric values
     IDENTIFIER = "IDENTIFIER" # variable names
+    STRING="STRING" #string class
 
 # arithmetic operators
     PLUS = "PLUS"
