@@ -2,6 +2,19 @@ from ast_nodes import Number,Variable,BinaryOp,UnaryOp,Assign,Print,Compound
 from TokenType import TokenType
 from error import ParserError
 
+#readable name map for user friendly error names
+TOKEN_NAMES = {
+    TokenType.LPAREN: "left parenthesis '('",
+    TokenType.RPAREN: "right parenthesis ')'",
+    TokenType.PLUS: "plus '+'",
+    TokenType.MINUS: "minus '-'",
+    TokenType.MULTIPLY: "multiply '*'",
+    TokenType.DIVIDE: "divide '/'",
+    TokenType.ASSIGN: "assignment '='",
+    TokenType.LESS: "less than '<'",
+    TokenType.GREATER: "greater than '>'",
+}
+
 # parser : converts tokens to AST (abstract syntax tree)
 class Parser:
     def __init__(self,tokens):
@@ -16,13 +29,10 @@ class Parser:
             self.current_token=self.tokens[self.pos]
 
 # expect : ensures the current token matches the expected type if not raises an error
-    def expect(self,token_type): 
-        if self.current_token.type !=token_type:
-            raise ParserError(
-                f"Expected {token_type}",
-                self.current_token.line,
-                self.current_token.column
-)
+    def expect(self, token_type):
+        if self.current_token.type != token_type:
+            expected = TOKEN_NAMES.get(token_type, token_type)
+            raise ParserError(f"Expected {expected}, but got '{self.current_token.value}'",self.current_token.line,self.current_token.column)
         self.advance()
 
 # factor : smallest unit
@@ -50,11 +60,7 @@ class Parser:
             node = self.comparison() # parse inside expression
             self.expect(TokenType.RPAREN) # to expect closing parantheses )
             return node 
-        raise ParserError(
-            "Unexpected token in factor",
-            token.line,
-            token.column
-)
+        raise ParserError("Unexpected token in factor",token.line,token.column)
 
 # term : handles * and /
     def term(self):
