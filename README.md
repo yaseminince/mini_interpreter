@@ -7,64 +7,53 @@ This project is a mini programming language interpreter implemented in Python. I
 ## Features
 
 - **Lexer (Tokenizer):** Converts input text into tokens  
-
 - **Parser:** Builds an Abstract Syntax Tree (AST)  
-
 - **Interpreter:** Evaluates and executes expressions  
-
 - **Error Handling:** Provides clear error messages with line and column information  
 
 ---
 
-## Supported Operations
+## Supported Features
 
-- Arithmetic operations: `+`, `-`, `*`, `/`  
+### Arithmetic Operations
+- `+`, `-`, `*`, `/`
 
-- Unary operations: `+x`, `-x`  
+### Unary Operations
+- `+x`, `-x`
 
-- Comparison operators: `<`, `>`  
+### Comparison Operators
+- `<`, `>`
 
-- Variable assignment: `x = 5`  
+### Variables
+- Assignment: `x = 5`
 
-- Print statements: `print(x)`  
+### Output
+- `print(x)`
 
-- Parentheses: `( ... )`
+### Parentheses
+- `( ... )`
 
----
-
-## How It Works
-
-1. The **lexer** converts input text into tokens  
-2. The **parser** generates an AST from tokens  
-3. The **interpreter** evaluates the AST and produces output  
-
----
-
-## How to Run
-
-Run the following command:
-python main.py
-Then enter your code in the terminal.
+### Strings 
+- String literals: `"hello"`
+- String concatenation using `+`
 
 ---
 
-## Concepts Covered
+## Example
 
-- Lexical analysis  
-- Parsing and grammar rules  
-- Abstract Syntax Trees (AST)  
-- Recursion  
-- Expression evaluation  
-- Error handling  
+```python
+x = 3 + 5 * 2
+print(x)
 
----
+name = "Yasemin"
+print("Hello " + name)
 
-## Future Improvements
-
-- Add `if` statements  
-- Add loops (`while`)  
-- Add function support  
-- Add string support  
-- Improve error handling  
+print("Result: " + (3 + 2))
 
 ---
+
+## How it Works
+
+1. The lexer converts input text into tokens
+2. The parser generates an AST from tokens
+3. The interpreter evaluates the AST and produces output
