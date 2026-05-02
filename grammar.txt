@@ -20,4 +20,5 @@ term            : factor ((MULTIPLY | DIVIDE) factor)*
 factor          : (PLUS | MINUS) factor
                 | NUMBER
                 | IDENTIFIER
+                | STRING
                 | LPAREN comparison RPAREN
