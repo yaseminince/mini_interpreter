@@ -39,21 +39,31 @@ This project is a mini programming language interpreter implemented in Python. I
 
 ---
 
-## Example
-
-```python
-x = 3 + 5 * 2
-print(x)
-
-name = "Yasemin"
-print("Hello " + name)
-
-print("Result: " + (3 + 2))
-
----
-
 ## How it Works
 
 1. The lexer converts input text into tokens
 2. The parser generates an AST from tokens
 3. The interpreter evaluates the AST and produces output
+
+---
+
+## Concepts Covered
+
+* Lexical analysis
+* Parsing and grammar rules
+* Abstract Syntax Trees (AST)
+* Recursion
+* Expression evaluation
+* Error handling
+* Basic language design
+
+---
+
+## Future Improvements
+
+* Add if statements
+* Add loops (while)
+* Add function support
+* Improve string handling
+* Add type checking
+
