@@ -1,4 +1,4 @@
-from ast_nodes import Number,Variable,BinaryOp,UnaryOp,Assign,Print,Compound
+from ast_nodes import Number,Variable,BinaryOp,UnaryOp,Assign,Print,Compound,String
 from TokenType import TokenType
 from error import ParserError
 
@@ -53,6 +53,10 @@ class Parser:
         elif token.type == TokenType.IDENTIFIER:
             self.advance()
             return Variable(token.value)
+        
+        elif token.type == TokenType.STRING:
+            self.advance()
+            return String(token.value)
         
         # used for expressions like (3+5)
         elif token.type == TokenType.LPAREN:
