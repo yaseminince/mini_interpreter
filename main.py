@@ -3,17 +3,18 @@ from interpreter import Interpreter
 
 RED = "\033[91m"    # red color for error messages
 GREEN = "\033[92m"  # green color for successful output
+CYAN = "\033[96m"
 RESET = "\033[0m"   # resets the color back to normal
 
 
 # prints the welcome banner when the program starts
 def print_header():
-    print("=========================================================================")
-    print("                  MINI PROGRAMMING LANGUAGE/INTERPRETER")
-    print("=========================================================================")
+    print("=======================================================================")
+    print(f"{CYAN}                       ☁️   WELCOME TO CLOUD   ☁️         {RESET}")
+    print("=======================================================================")
     print("Write your code line by line.")
     print("Type 'help' to see commands.")
-    print("=========================================================================")
+    print("=======================================================================")
     print()
 
 
@@ -36,12 +37,12 @@ def print_program(lines):
         return
 
     print("\nCurrent program:")
-    print("-------------------------------------------------------------------------")
+    print("-----------------------------------------------------------------------")
 
     for i in range(len(lines)):
         print(f"{i+1:>2} | {lines[i]}")
 
-    print("-------------------------------------------------------------------------")
+    print("-----------------------------------------------------------------------")
     print()
 
 
@@ -59,6 +60,15 @@ def undo_last_line(lines):
 def clear_program(lines):
     lines.clear()
     print("\nProgram cleared. You can start writing again.\n")
+
+
+# formats the result value for display based on its type
+def format_result(result):
+    if isinstance(result, bool):
+        return "true" if result else "false"
+    if isinstance(result, float) and result == int(result):
+        return str(int(result))  # show 3.0 as 3
+    return str(result)
 
 
 # runs the program the user has typed so far
@@ -86,14 +96,14 @@ def run_program(lines):
         print(f"{GREEN}[OUTPUT]{RESET}")
 
         if result is not None:
-            print(result)
+            print(format_result(result))
         else:
             print("Program executed successfully.")
 
         lines.clear()
         print("\nProgram finished. You can start a new program.")
 
-    print("\n" + "=========================================================================" + "\n")
+    print("\n" + "=======================================================================" + "\n")
 
 
 # keeps the interpreter running until the user types exit
@@ -105,7 +115,7 @@ def main():
 
     while True:
         
-        line = input(">>> ").rstrip()
+        line = input("☁️ >>> ").rstrip()
         
         command = line.strip().upper() # uppercase 
 
