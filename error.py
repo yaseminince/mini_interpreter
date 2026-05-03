@@ -24,10 +24,12 @@ class ParserError(Error):
     def __init__(self, details, line, column):
         super().__init__("Syntax Error", details, line, column)
 
-# for errors that happen while the program is running
-class InterpreterRuntimeError(Exception):
-    def __init__(self, message):
-        self.message = message
-
-    def __str__(self):
-        return f"Runtime Error: {self.message}"
+# error for problems that happen while running the program
+class InterpreterRuntimeError(Error):
+    def __init__(self, details, line, column):
+        super().__init__("Runtime Error", details, line, column)
+ 
+# error for invalid operations between incompatible types e.g. string + number
+class StringError(Error):
+    def __init__(self, details, line=None, column=None):
+        super().__init__("String Error", details, line, column)
