@@ -1,8 +1,7 @@
 from Lexer import Lexer
 from parser import Parser
 from TokenType import TokenType
-from ast_nodes import Number, Variable, BinaryOp, UnaryOp, Assign, Print, Compound
-from error import InterpreterRuntimeError
+from error import InterpreterRuntimeError, StringError
 
 
 # evaluates the AST and produces a result
@@ -15,6 +14,8 @@ class Interpreter:
     def visit(self, node):
         if type(node).__name__ == "Number":
             return self.visit_Number(node)
+        elif type(node).__name__ == "String":
+            return self.visit_String(node)
         elif type(node).__name__ == "Variable":
             return self.visit_Variable(node)
         elif type(node).__name__ == "BinaryOp":
@@ -28,7 +29,7 @@ class Interpreter:
         elif type(node).__name__ == "Compound":
             return self.visit_Compound(node)
         else:
-            raise InterpreterRuntimeError(f"No visit method for {type(node).__name__}")
+            raise InterpreterRuntimeError(f"No visit method for {type(node).__name__}",0,0)
 
     # converts number value to int or float
     def visit_Number(self, node):
@@ -42,28 +43,61 @@ class Interpreter:
                 return float(value)
             return int(value)
 
-        raise InterpreterRuntimeError(f"Invalid number value: {value}")
+        raise InterpreterRuntimeError(f"Invalid number value: {value}",node.line,node.column)
+
+    # returns the string value directly
+    def visit_String(self, node):
+        return node.value
 
     # looks up variable value from memory
     def visit_Variable(self, node):
         var_name = node.name
 
         if var_name not in self.variables:
-            raise InterpreterRuntimeError(f"Variable '{var_name}' is not defined")
+            raise InterpreterRuntimeError(f"Variable '{var_name}' is not defined", node.line, node.column)
 
         return self.variables[var_name]
 
-    # evaluates math and comparison operations
+    # evaluates math, string, and comparison operations
     def visit_BinaryOp(self, node):
         left = self.visit(node.left)
         right = self.visit(node.right)
 
         op_type = node.op.type
+        op_line = node.op.line
+        op_col = node.op.column
+
+        left_is_str = isinstance(left, str)
+        right_is_str = isinstance(right, str)
 
         if op_type == TokenType.PLUS:
-            return left + right
+            # string + string -> concatenation
+            if left_is_str and right_is_str:
+                return left + right
+            # number + number -> addition
+            if not left_is_str and not right_is_str:
+                return left + right
+            # mixed types are not allowed
+            raise StringError(
+                f"Cannot use '+' between string and number",
+                op_line, op_col
+            )
 
-        elif op_type == TokenType.MINUS:
+        # operations below are only valid for numbers
+        if left_is_str or right_is_str:
+            op_symbol = {
+                TokenType.MINUS: "-",
+                TokenType.MULTIPLY: "*",
+                TokenType.DIVIDE: "/",
+                TokenType.LESS: "<",
+                TokenType.GREATER: ">",
+            }.get(op_type, "?")
+            raise StringError(
+                f"Cannot use '{op_symbol}' with strings",
+                op_line, op_col
+            )
+
+        if op_type == TokenType.MINUS:
             return left - right
 
         elif op_type == TokenType.MULTIPLY:
@@ -71,7 +105,7 @@ class Interpreter:
 
         elif op_type == TokenType.DIVIDE:
             if right == 0:
-                raise InterpreterRuntimeError("Division by zero")
+                raise InterpreterRuntimeError("Division by zero", op_line, op_col)
             return left / right
 
         elif op_type == TokenType.LESS:
@@ -80,11 +114,17 @@ class Interpreter:
         elif op_type == TokenType.GREATER:
             return left > right
 
-        raise InterpreterRuntimeError(f"Unknown operator: {node.op}")
+        raise InterpreterRuntimeError(f"Unknown operator: {node.op}", op_line, op_col)
 
     # applies a plus or minus sign to a value
     def visit_UnaryOp(self, node):
         value = self.visit(node.node)
+
+        if isinstance(value, str):
+            raise StringError(
+                "Cannot apply unary operator to a string",
+                node.op.line, node.op.column
+            )
 
         if node.op.type == TokenType.MINUS:
             return -value
@@ -92,7 +132,7 @@ class Interpreter:
         elif node.op.type == TokenType.PLUS:
             return +value
 
-        raise InterpreterRuntimeError(f"Unknown unary operator: {node.op}")
+        raise InterpreterRuntimeError(f"Unknown unary operator: {node.op}", node.op.line, node.op.column)
 
     # stores the result of an expression in variables
     def visit_Assign(self, node):
@@ -103,6 +143,7 @@ class Interpreter:
     # evaluates the expression and adds result to output
     def visit_Print(self, node):
         value = self.visit(node.value)
+        # strings are printed without extra quotes
         self.output.append(str(value))
         return value
 
