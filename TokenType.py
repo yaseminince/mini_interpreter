@@ -10,6 +10,7 @@ class TokenType:
     MULTIPLY = "MULTIPLY"
     DIVIDE = "DIVIDE"
     ASSIGN = "ASSIGN"
+    POWER = "POWER"
 
 # comparison operators
     LESS = "LESS"
