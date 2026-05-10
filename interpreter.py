@@ -29,7 +29,7 @@ class Interpreter:
         elif type(node).__name__ == "Compound":
             return self.visit_Compound(node)
         else:
-            raise InterpreterRuntimeError(f"No visit method for {type(node).__name__}",0,0)
+            raise InterpreterRuntimeError(f"No visit method for {type(node).__name__}", node.line, node.column)
 
     # converts number value to int or float
     def visit_Number(self, node):
@@ -43,7 +43,7 @@ class Interpreter:
                 return float(value)
             return int(value)
 
-        raise InterpreterRuntimeError(f"Invalid number value: {value}",node.line,node.column)
+        raise InterpreterRuntimeError(f"Invalid number value: {value}", node.line, node.column)
 
     # returns the string value directly
     def visit_String(self, node):
@@ -89,6 +89,7 @@ class Interpreter:
                 TokenType.MINUS: "-",
                 TokenType.MULTIPLY: "*",
                 TokenType.DIVIDE: "/",
+                TokenType.POWER: "^",
                 TokenType.LESS: "<",
                 TokenType.GREATER: ">",
             }.get(op_type, "?")
@@ -113,6 +114,9 @@ class Interpreter:
 
         elif op_type == TokenType.GREATER:
             return left > right
+
+        elif op_type == TokenType.POWER:
+            return left ** right
 
         raise InterpreterRuntimeError(f"Unknown operator: {node.op}", op_line, op_col)
 
