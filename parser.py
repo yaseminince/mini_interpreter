@@ -11,6 +11,7 @@ TOKEN_NAMES = {
     TokenType.MULTIPLY: "multiply '*'",
     TokenType.DIVIDE: "divide '/'",
     TokenType.ASSIGN: "assignment '='",
+    TokenType.POWER: "power '^'",
     TokenType.LESS: "less than '<'",
     TokenType.GREATER: "greater than '>'",
 }
@@ -48,15 +49,15 @@ class Parser:
         
         if token.type == TokenType.NUMBER:
             self.advance()
-            return Number(token.value) 
+            return Number(token.value, token.line, token.column)
         
         elif token.type == TokenType.IDENTIFIER:
             self.advance()
-            return Variable(token.value)
+            return Variable(token.value, token.line, token.column)
         
         elif token.type == TokenType.STRING:
             self.advance()
-            return String(token.value)
+            return String(token.value, token.line, token.column)
         
         # used for expressions like (3+5)
         elif token.type == TokenType.LPAREN:
@@ -66,13 +67,24 @@ class Parser:
             return node 
         raise ParserError("Unexpected token in factor",token.line,token.column)
 
+# power : handles ^
+    def power(self):
+        node= self.factor()
+        if self.current_token.type == TokenType.POWER:
+            op=self.current_token
+            self.advance()
+            right=self.power() # recursion
+
+            node=BinaryOp(node,op,right)
+        return node
+    
 # term : handles * and /
     def term(self):
-        node=self.factor()
+        node=self.power()
         while self.current_token.type in (TokenType.MULTIPLY,TokenType.DIVIDE):
             op=self.current_token
             self.advance()
-            node=BinaryOp(node,op,self.factor())
+            node=BinaryOp(node,op,self.power())
         return node
     
 # expr : handles + and -
@@ -109,15 +121,16 @@ class Parser:
         self.expect(TokenType.ASSIGN)
         # parse right hand side
         value=self.comparison()
-        return Assign(var_name,value)
+        return Assign(var_name, value, token.line, token.column)
 
 # print_statement : prints the expression
     def print_statement(self):
+        token = self.current_token
         self.expect(TokenType.PRINT)
         self.expect(TokenType.LPAREN)
-        value=self.comparison()
+        value = self.comparison()
         self.expect(TokenType.RPAREN)
-        return Print(value)
+        return Print(value, token.line, token.column)
 
 #statement : one line of a code
     def statement(self):
@@ -135,3 +148,4 @@ class Parser:
         while self.current_token.type != TokenType.EOF:
             statements.append(self.statement())
         return Compound(statements)
+    
