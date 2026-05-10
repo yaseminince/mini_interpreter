@@ -15,7 +15,9 @@ comparison      : expr ((LESS | GREATER) expr)?
 
 expr            : term ((PLUS | MINUS) term)*
 
-term            : factor ((MULTIPLY | DIVIDE) factor)*
+term            : power ((MULTIPLY | DIVIDE) power)*
+
+power           : factor (POWER factor)*
 
 factor          : (PLUS | MINUS) factor
                 | NUMBER
